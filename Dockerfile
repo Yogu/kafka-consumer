@@ -1,4 +1,5 @@
 FROM maven:3.2.5-jdk-8u40
+EXPOSE 9000
 
 RUN mkdir --parents /usr/src/app
 WORKDIR /usr/src/app
