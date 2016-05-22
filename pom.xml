@@ -28,7 +28,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ProducerMain</mainClass>
+                            <mainClass>ConsumerMain</mainClass>
                         </manifest>
                     </archive>
                     <!-- jar filename will be service-jar-with-dependencies.jar -->
