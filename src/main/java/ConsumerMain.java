@@ -4,8 +4,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import de.unistuttgart.isw.serviceorchestration.api.MessageBus;
-import de.unistuttgart.isw.serviceorchestration.api.MessageSender;
+import de.unistuttgart.isw.serviceorchestration.servicecore.MessageBus;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -41,18 +40,6 @@ public class ConsumerMain {
                 });
 
         bus.runListener();
-
-
-
-
-
-
-//        MessageSender sender = bus.createSender("output", "https://opcfoundation.org/UA/2008/02/Types.xsd");
-//
-//        while (true) {
-//            sender.send(xmlFile);
-//            Thread.sleep(1000);
-//        }
 
     }
 
