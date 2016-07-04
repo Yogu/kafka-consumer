@@ -1,6 +1,7 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import de.unistuttgart.isw.serviceorchestration.api.MessageBus;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -25,42 +26,14 @@ public class ConsumerMain {
 		server.start();
 		System.out.println("Listening on port 9000");
 
-		if (System.getenv("INPUT_input") == null) {
-			throw new RuntimeException("Missing environment variable INPUT_input");
-		}
+		MessageBus bus = new MessageBus();
+		bus.createReceiver("input", "https://opcfoundation.org/UA/2008/02/Types.xsd",
+				xml -> {
+					lastLog = xml;
+					System.out.println(xml);
+				});
 
-		Properties props = new Properties();
-		props.put("bootstrap.servers", "kafka:9092");
-		props.put("group.id", "test");
-		props.put("enable.auto.commit", "true");
-		props.put("auto.commit.interval.ms", "1000");
-		props.put("session.timeout.ms", "30000");
-		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-		System.out.println("Creating consumer...");
-		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-		System.out.println("Created consumer");
-		for (Map.Entry<String, List<PartitionInfo>> topic : consumer.listTopics().entrySet()) {
-			System.out.println("  topic " + topic.getKey() + " with " + topic.getValue().size() + " partitions: ");
-			for (PartitionInfo partition : topic.getValue()) {
-				System.out.println("    partition " + partition.partition() + ", leader: " + partition.leader().host());
-			}
-		}
-
-		String[] topicNames = System.getenv("INPUT_input").split(",");
-		System.out.println("Subscribing to " + System.getenv("INPUT_input"));
-		consumer.subscribe(Arrays.asList(topicNames));
-		System.out.println("Waiting for messages...");
-
-		while (true) {
-			ConsumerRecords<String, String> records = consumer.poll(100);
-			for (ConsumerRecord<String, String> record : records) {
-				lastLog = String.format("offset = %d, key = %s, value = %s", record.offset(),
-						record.key(),
-						record.value());
-				System.out.println(lastLog);
-			}
-		}
+		bus.runListener();
 	}
 
 	static class MyHandler implements HttpHandler {
