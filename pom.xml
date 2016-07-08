@@ -39,7 +39,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ConsumerMain</mainClass>
+                            <mainClass>de.unistuttgart.isw.serviceorchestration.ConsumerMain</mainClass>
                         </manifest>
                     </archive>
                     <!-- jar filename will be service-jar-with-dependencies.jar -->
